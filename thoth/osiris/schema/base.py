@@ -7,19 +7,20 @@ from http import HTTPStatus
 from marshmallow import fields
 from marshmallow import Schema
 
-from osiris import ABOUT
-from osiris.utils import format_status_message
+from thoth.osiris import ABOUT
+from thoth.osiris.utils import format_status_message
 
 
 # Model: Status
+
 
 class AppData(object):
     """AppData model."""
 
     def __init__(self):
         """Initialize AppData model."""
-        self.name = ABOUT['__title__']
-        self.version = ABOUT['__version__']
+        self.name = ABOUT["__title__"]
+        self.version = ABOUT["__version__"]
 
 
 class AppDataSchema(Schema):
@@ -50,6 +51,7 @@ class StatusSchema(Schema):
 
 
 # Model: Base
+
 
 class Base(object):
     """Base model."""

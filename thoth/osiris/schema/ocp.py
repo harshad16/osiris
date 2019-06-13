@@ -10,11 +10,7 @@ from marshmallow import Schema
 class OCP(object):
     """OCP model."""
 
-    def __init__(self,
-                 kind: str = None,
-                 name: str = None,
-                 namespace: str = None,
-                 self_link: str = None):
+    def __init__(self, kind: str = None, name: str = None, namespace: str = None, self_link: str = None):
         """Initialize OCP model."""
         self.kind = kind
 
@@ -32,30 +28,20 @@ class OCP(object):
 
         self_link = event.metadata.self_link
 
-        return cls(
-            kind=kind,
-            name=name,
-            namespace=namespace,
-            self_link=self_link
-        )
+        return cls(kind=kind, name=name, namespace=namespace, self_link=self_link)
 
     @classmethod
     def from_resource(cls, resource: "ResourceInstance"):
         """Construct class from OpenShift ResourceInstance."""
-        metadata = resource['metadata']
+        metadata = resource["metadata"]
 
-        kind = resource['kind']
-        name = metadata['name']
-        namespace = metadata['namespace']
+        kind = resource["kind"]
+        name = metadata["name"]
+        namespace = metadata["namespace"]
 
-        self_link = metadata['selfLink']
+        self_link = metadata["selfLink"]
 
-        return cls(
-            kind=kind,
-            name=name,
-            namespace=namespace,
-            self_link=self_link
-        )
+        return cls(kind=kind, name=name, namespace=namespace, self_link=self_link)
 
 
 class OCPSchema(Schema):

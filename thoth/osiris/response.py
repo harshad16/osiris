@@ -7,7 +7,7 @@ import typing
 from http import HTTPStatus
 from marshmallow import MarshalResult
 
-from osiris.schema.base import Base, BaseSchema
+from thoth.osiris.schema.base import Base, BaseSchema
 
 
 __schema__ = BaseSchema()
@@ -15,8 +15,8 @@ __schema__ = BaseSchema()
 
 def status(http_status: HTTPStatus):
     """Use this decorator to assemble custom payloads with default keys common to all responses."""
-    def wrapper(fun: typing.Callable[..., dict] = None):
 
+    def wrapper(fun: typing.Callable[..., dict] = None):
         def inner(*args, **kwargs) -> typing.Tuple[dict, HTTPStatus]:
             base = Base(http_status)
 
@@ -28,11 +28,11 @@ def status(http_status: HTTPStatus):
             response.errors.update(errors or {})
 
             if isinstance(payload, MarshalResult):
-                response.data.update({'payload': payload.data})
+                response.data.update({"payload": payload.data})
                 response.errors.update(payload.errors)
 
             else:
-                response.data.update({'payload': payload or {}})
+                response.data.update({"payload": payload or {}})
 
             # noinspection PyProtectedMember
             return response._asdict(), http_status.value
@@ -43,6 +43,7 @@ def status(http_status: HTTPStatus):
 
 
 # Syntactic sugar for some of common payloads follows
+
 
 @status(HTTPStatus.OK)
 def request_ok(payload=None, errors=None, **kwargs) -> tuple:  # pragma: no cover

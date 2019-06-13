@@ -11,8 +11,8 @@ from marshmallow import fields
 from marshmallow import post_load
 from marshmallow import Schema
 
-from osiris import DEFAULT_OC_LOG_LEVEL
-from osiris.schema.ocp import OCP, OCPSchema
+from thoth.osiris import DEFAULT_OC_LOG_LEVEL
+from thoth.osiris.schema.ocp import OCP, OCPSchema
 
 from kubernetes.client.models.v1_event import V1Event as Event
 from openshift.dynamic.client import ResourceInstance
@@ -23,15 +23,17 @@ from thoth.common.helpers import _DATETIME_FORMAT_STRING  # noqa
 class BuildInfo(object):
     """BuildInfo model."""
 
-    def __init__(self,
-                 build_id: str = None,
-                 build_status: str = None,
-                 build_url: str = None,
-                 build_log_url: str = None,
-                 ocp_info: OCP = None,
-                 first_timestamp: datetime = None,
-                 last_timestamp: datetime = None,
-                 log_level: int = None):
+    def __init__(
+        self,
+        build_id: str = None,
+        build_status: str = None,
+        build_url: str = None,
+        build_log_url: str = None,
+        ocp_info: OCP = None,
+        first_timestamp: datetime = None,
+        last_timestamp: datetime = None,
+        log_level: int = None,
+    ):
         """Initialize BuildInfo model."""
         self.build_id = build_id
         self.build_status = build_status
@@ -57,7 +59,7 @@ class BuildInfo(object):
             first_timestamp=event.first_timestamp,
             last_timestamp=event.last_timestamp,
             ocp_info=ocp,
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -65,25 +67,25 @@ class BuildInfo(object):
         """Create BuildInfo model from kubernetes event."""
         ocp = OCP.from_resource(resource)
 
-        metadata = resource['metadata']
-        status = resource['status']
+        metadata = resource["metadata"]
+        status = resource["status"]
 
         datetime_fmt = "%Y-%m-%dT%H:%M:%SZ"
         try:  # might be missing if build is in Pending state
-            start_ts = datetime.strptime(status['startTimestamp'], datetime_fmt)
-            end_ts = datetime.strptime(status['completionTimestamp'], datetime_fmt)
+            start_ts = datetime.strptime(status["startTimestamp"], datetime_fmt)
+            end_ts = datetime.strptime(status["completionTimestamp"], datetime_fmt)
         except KeyError:
             start_ts = None
             end_ts = None
 
         return cls(
-            build_id=build_id or metadata['name'],
-            build_status=status['phase'],
+            build_id=build_id or metadata["name"],
+            build_status=status["phase"],
             # TODO: use `format_datetime` from thoth.common when available in PyPI
             first_timestamp=start_ts,
             last_timestamp=end_ts,
             ocp_info=ocp,
-            **kwargs
+            **kwargs,
         )
 
     def build_complete(self) -> bool:
@@ -130,11 +132,9 @@ class BuildInfoPagination(object):
 
     RESULTS_PER_PAGE = 20
 
-    def __init__(self,
-                 build_info_list: List[BuildInfo] = None,
-                 total: int = None,
-                 has_next: bool = None,
-                 has_prev: bool = None):
+    def __init__(
+        self, build_info_list: List[BuildInfo] = None, total: int = None, has_next: bool = None, has_prev: bool = None
+    ):
         """Initialize BuildInfoPagination model."""
         self.build_info = build_info_list
 
